@@ -17,9 +17,16 @@ const placeSchema=new mongoose.Schema(
             required:true
         },
         location:{
-            type:String,
-            trim:true,
-            required:true
+            lng:{
+                type:String,
+                trim:true,
+                required:true
+            },
+            lat:{
+                type:String,
+                trim:true,
+                required:true
+            }
         }
     },
     {timestamps:true,
