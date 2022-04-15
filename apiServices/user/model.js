@@ -1,7 +1,73 @@
 const mongoose=require("mongoose");
 const userSchema=new mongoose.Schema(
     {
-        
+        email:{//mfura@myemail.com
+            type:String,
+            required:true,
+            unique:true,
+            match:/^(\w+[/./-]?){1,}@[a-z]+([/.]\w{2,}|([/.]\w{2,})+[/.]\w{2,})$/,
+            trim:true
+        },
+        location:{
+            lng:{
+                type:Number,
+                required:true,
+                default:0
+            },
+            lat:{
+                type:Number,
+                required:true,
+                default:0
+            }
+        },
+        password:{
+            type:String,
+            required:true,
+            trim:true
+        },
+        username:{//@marco2065
+            type:String,
+            required:true,
+            unique:true,
+            maxlength:32,
+            trim:true
+        },
+        name:{//Marco Fura
+            type:String,
+            maxlength:32,
+            match:/^[a-z A-ZáéíóúñÑ,.'´-]+$/,
+            trim:true,
+            default:""
+        },
+        status:{//offline | online | toConfirm
+            type:String,
+            enum:["Offline","Online","ToConfirm"],
+            required:true,
+            default:"ToConfirm"
+        },
+        age:{
+            type:Number,
+            min:18
+        },
+        role:{
+            type:String,
+            trim:true,
+            enum:["user","premium"],
+            required:true,
+            default:"user"
+        }, 
+        verificationCode:{//15AG87
+            code:{
+                type:String,
+                trim:true,
+                length:6
+            },
+            expiredTime:{
+                type:Date,
+                expires:120,
+                default:Date.now()
+            }
+        }
     },{
         versionKey:false,
         timestamps:true

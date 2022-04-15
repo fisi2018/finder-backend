@@ -5,10 +5,11 @@ const httpError=(res,error)=>{
         error
     })
 }
-const handleError=(error,message)=>{
+const handleError=(error,message,status)=>{
     return{
         error,
-        message
+        message,
+        status
     }
 }
 module.exports={httpError,handleError};
