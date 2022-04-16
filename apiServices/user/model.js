@@ -4,6 +4,7 @@ const userSchema=new mongoose.Schema(
         email:{//mfura@myemail.com
             type:String,
             required:true,
+            maxlength:32,
             unique:true,
             match:/^(\w+[/./-]?){1,}@[a-z]+([/.]\w{2,}|([/.]\w{2,})+[/.]\w{2,})$/,
             trim:true
@@ -55,18 +56,6 @@ const userSchema=new mongoose.Schema(
             enum:["user","premium"],
             required:true,
             default:"user"
-        }, 
-        verificationCode:{//15AG87
-            code:{
-                type:String,
-                trim:true,
-                length:6
-            },
-            expiredTime:{
-                type:Date,
-                expires:120,
-                default:Date.now()
-            }
         }
     },{
         versionKey:false,

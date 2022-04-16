@@ -14,7 +14,8 @@ exports.register=async(req,res)=>{
         const response=await registerService(fields);
         if(response.error)return res.status(response.status).send({message:response.message,error:response.error});
         return res.status(201).send({
-            message:response.message
+            message:response.message,
+            code:response.code
         })
     }catch(err){
         httpError(res,err);
@@ -22,7 +23,7 @@ exports.register=async(req,res)=>{
 }
 exports.confirmAccount=async(req,res)=>{
     try{
-        
+
     }catch(err){
         httpError(res,err);
     }
