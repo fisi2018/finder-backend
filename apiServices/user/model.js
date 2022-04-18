@@ -40,11 +40,11 @@ const userSchema=new mongoose.Schema(
             trim:true,
             default:""
         },
-        status:{//offline | online | toConfirm
+        status:{//offline | online 
             type:String,
-            enum:["Offline","Online","ToConfirm"],
+            enum:["Offline","Online"],
             required:true,
-            default:"ToConfirm"
+            default:"Offline"
         },
         age:{
             type:Number,

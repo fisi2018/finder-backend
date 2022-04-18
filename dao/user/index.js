@@ -1,5 +1,6 @@
 const { handleError } = require("../../helpers/handleError")
 const UserModel=require("../../apiServices/user/model");
+const UserToConfirmModel=require("../../apiServices/userToConfirm/model");
 const createUserDao=async(email,password,name,username)=>{
     try{
         await UserModel.create({email,password,name,username});
@@ -19,11 +20,11 @@ const createUserDao=async(email,password,name,username)=>{
 const verifyEmailDao=async(email)=>{
     try{
         const result=await UserModel.findOne({email});
-        if(!result) return {message:"Email disponible"};
-        if(result.status==="ToConfirm") return handleError(result.status,"Cuenta por confirmar",503);
-        if(result.status==="Offline" || result.status==="Online") return handleError(result.status,"Email ya registrado",503)
+        const response=await UserToConfirmModel.findOne({email});
+        if(!result && !response) return {message:"Email disponible"};
+        if(result)return handleError("EmailOcupado","Email ya registrado",503);
+        if(response)return handleError("EmailToConfirm","Email por confirmar",503);
     }catch(err){
-        console.log("error catch verify ",err," tipo ",typeof err);
         return handleError(err,"Ha ocurrido un error en la capa de datos",500);
     }
 }

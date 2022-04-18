@@ -9,7 +9,7 @@ const codeSchema=new mongoose.Schema({
     },
     expiredTime:{
         type:Date,
-        expires:360,
+        expires:300,
         default:Date.now()
     }
 },{
