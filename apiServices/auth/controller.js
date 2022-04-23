@@ -1,9 +1,15 @@
-const { httpError, handleError } = require("../../helpers/handleError");
-const { registerService, userByIdService, confirmAccountService } = require("../../services/auth");
+const { httpError} = require("../../helpers/handleError");
+const { loginService,registerService, userByIdService, confirmAccountService } = require("../../services/auth");
 
 exports.login=async(req,res)=>{
     try{
-        
+        const {email,password}=req.body;
+        const response=await loginService(email,password);
+        if(response.error)return res.status(response.error).send({message:response.message,error:response.error});
+        return res.status(202).send({
+            message:response.message,
+            token:response.token
+        });
     }catch(err){
         httpError(res,err);
     }

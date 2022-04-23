@@ -56,6 +56,10 @@ const userSchema=new mongoose.Schema(
             enum:["user","premium"],
             required:true,
             default:"user"
+        },
+        token:{
+            type:String,
+            trim:true
         }
     },{
         versionKey:false,

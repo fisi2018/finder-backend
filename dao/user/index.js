@@ -28,4 +28,27 @@ const verifyEmailDao=async(email)=>{
         return handleError(err,"Ha ocurrido un error en la capa de datos",500);
     }
 }
-module.exports={createUserDao,verifyEmailDao}
+const getUserDao=async(email)=>{
+    try{
+        const response=await UserModel.findOne({email});
+        if(!response)return handleError(true,"Email inválido",404);
+        return{
+            message:"Email encontrado",
+            user:response
+        }
+    }catch(err){
+        return handleError(err,"Ha ocurrido un error en la capa de datos",500);
+    }
+}
+const loginDao=async(id,token)=>{
+    try{
+        const response=await UserModel.findByIdAndUpdate(id,{token, status:"Online"}).select("-password");
+        return{
+            message:"Usuario logeado exitosamente",
+            user:response
+        }
+    }catch(err){
+        return handleError(err,"Ha ocurrido un error en la capa de datos",500);
+    }
+}
+module.exports={createUserDao,verifyEmailDao,loginDao,getUserDao}
