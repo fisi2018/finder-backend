@@ -28,6 +28,7 @@ const validateLogin=async(req,res,next)=>{
     next();
 }
 const validateCode=async(req,res,next)=>{
+    console.log("validando");
     await body("code").isLength({min:6,max:6}).run(req);
     const errors=validationResult(req);
     if(!errors.isEmpty()){

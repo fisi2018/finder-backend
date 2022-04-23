@@ -1,6 +1,6 @@
 const { createCodeDao, removeCodeDao } = require("../../dao/code");
-const {verifyEmailDao, createUserDao, loginDao, getUserDao } = require("../../dao/user");
-const { createUserToConfirmDao, userByIdDao } = require("../../dao/userToConfirm");
+const {verifyEmailDao, createUserDao, loginDao, getUserDao, logoutDao } = require("../../dao/user");
+const { createUserToConfirmDao, userByIdDao, updateUserDao } = require("../../dao/userToConfirm");
 const { encrypt, compare } = require("../../helpers/handleBcrypt");
 const { handleError } = require("../../helpers/handleError");
 const { tokenLoginSign } = require("../../helpers/handleJwt");
@@ -61,6 +61,7 @@ const confirmAccountService=async(user,codeId,code)=>{
             return handleError("BadRequest","Credenciales incorrectas",400)
         }
     }catch(err){
+        console.log("error ",err);
         return handleError(err,"Ha ocurrido un error en la capa de servicios",500);
     }
 }
@@ -71,7 +72,7 @@ const loginService=async(email,password)=>{
         const isValid=await compare(password,response.user.password);
         if(!isValid)return handleError(true,"Contraseña inválida",400);
         const token=await tokenLoginSign(response.user);
-        const result=await loginDao(response._id,token);
+        const result=await loginDao(response.user._id);
         if(result.error)return handleError(response.error,response.message,response.status);
         return{
             message:result.message,
@@ -81,4 +82,34 @@ const loginService=async(email,password)=>{
         return handleError(err,"Ha ocurrido un error en la capa de servicios",500);
     }
 }
-module.exports={loginService,registerService,userByIdService,confirmAccountService}
+const sendCodeService=async(userId)=>{
+    try{
+        const code=generateCode();
+        const response=await createCodeDao(code);
+        if(response.error)return handleError(response.error,response.message,response.status);
+        const result=await updateUserDao(response.code._id,userId);
+        if(result.error) return handleError(result.error,result.message,result.status);
+        const info=await sendEmail(response.code.codeVerification,result.email);
+        if(info.error)return handleError(info.error,info.message,info.status);
+
+        return{
+            message:result.message,
+            code:result.code,
+            user:result.user
+        }
+    }catch(err){
+        return handleError(err,"Ha ocurrido un error en la capa de servicios",500);
+    }
+}
+const logoutService=async(id)=>{
+    try{
+        const response=await logoutDao(id);
+        if(response.error) return handleError(response.error,response.message,response.status);
+        return{
+            message:response.message
+        }
+    }catch(err){
+        return handleError(err,"Ha ocurrido un error en la capa de servicios",500);
+    }
+}
+module.exports={logoutService,sendCodeService,loginService,registerService,userByIdService,confirmAccountService}

@@ -40,9 +40,9 @@ const getUserDao=async(email)=>{
         return handleError(err,"Ha ocurrido un error en la capa de datos",500);
     }
 }
-const loginDao=async(id,token)=>{
+const loginDao=async(id)=>{
     try{
-        const response=await UserModel.findByIdAndUpdate(id,{token, status:"Online"}).select("-password");
+        const response=await UserModel.findByIdAndUpdate(id,{status:"Online"}).select("-password");
         return{
             message:"Usuario logeado exitosamente",
             user:response
@@ -51,4 +51,15 @@ const loginDao=async(id,token)=>{
         return handleError(err,"Ha ocurrido un error en la capa de datos",500);
     }
 }
-module.exports={createUserDao,verifyEmailDao,loginDao,getUserDao}
+const logoutDao=async(id)=>{
+    try{
+        const response=await UserModel.findByIdAndUpdate(id,{status:"Offline"});
+        if(!response)return handleError(true,"Usuario no encontrado",404);
+        return{
+            message:"Sesión cerrada exitosamente"
+        }
+    }catch(err){
+        return handleError(err,"Ha ocurrido un error en la capa de datos",500);
+    }
+}
+module.exports={logoutDao,createUserDao,verifyEmailDao,loginDao,getUserDao}
